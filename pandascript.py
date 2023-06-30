@@ -2,7 +2,7 @@ import json
 import requests
 import pandas as pd
 
-df = pd.read_csv("Q2_PH_queries.csv", header=None)
+df = pd.read_csv("Q2-files/Q2_PH_queries.csv", header=None)
 
 items_list = []
 # url_sg = "https://disco.deliveryhero.io/listing/api/v1/pandora/search?query={}&latitude=1.3117655&longitude=103.8963157&configuration=Control&customer_id=&vertical=restaurants&search_vertical=restaurants&language_id=1&opening_type=delivery&session_id=&language_code=en&customer_type=regular&limit=48&offset=0&country=sg&locale=en_SG&use_free_delivery_label=true&tag_label_metadata=true&ncr_screen=NA%3ANA&ncr_place=search%3Alist"
@@ -32,7 +32,6 @@ for index, row in df.iterrows():
         items_list = json.loads(resp.text)["data"]["items"]
         
         top_10_res = items_list[:10]
-        # print (top_10_res)
         
         for i in top_10_res:
             query = row[0]
@@ -49,9 +48,10 @@ for index, row in df.iterrows():
                 for tags in vendor_tags:
                     if tags["origin"] == "NCR":
                         tag = "NCR"
+                        vendor_tags_lst.append(tag)
                     else:
                         tag = "-"
-            vendor_tags_lst.append(tag)
+                        vendor_tags_lst.append(tag)
             
             vendor_cuisine_lst = []
             for cuisine in vendor_cuisines:
@@ -75,5 +75,5 @@ output_df = pd.DataFrame({'query': query_lst,
 'vendor_codes': vendorcodes, 'vendor_names': vendornames, 'vendor_tag': vendorfeatured, 
 'vendor_cuisines': vendorcuisines, 'vendor_image': vendorimages, 'vendor_urls': vendorurls})
 
-output_df.to_csv("results/Q2_PH_queries_scraped.csv", index=False)
+output_df.to_csv("Q2-files/Q2_PH_queries_scraped-new.csv", index=False)
 print ("output saved")
